@@ -1,0 +1,204 @@
+/* General Styling */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+/* Dashboard Container */
+.dashboard-container {
+    display: flex;
+    min-height: 100vh; /* Ensures full height for the page */
+}
+/* =========================================== */
+/* =========================================== */
+/* Resetting table styling issues from other CSS frameworks */
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th, td {
+    padding: 8px;
+    text-align: left;
+}
+
+@media (max-width: 768px) {
+    table {
+        display: block;
+        overflow-x: auto;
+        white-space: nowrap;
+    }
+
+    thead {
+        display: table-header-group;
+    }
+
+    tbody {
+        display: table-row-group;
+    }
+
+    tr {
+        display: table-row;
+    }
+}
+
+/* =========================================== */
+/* =========================================== */
+/* Sidebar Styling (Vertical Navbar) */
+.sidebar {
+    width: 250px; /* Width of the sidebar */
+    background-color: #343a40;
+    color: white;
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100%; /* Full height for sidebar */
+    padding-top: 20px;
+    padding-bottom: 20px; /* Adds space at the bottom of sidebar */
+}
+
+/* Profile Section in Sidebar */
+.sidebar .profile {
+    text-align: center;
+    background-color: #1abc9c;
+    padding: 20px;
+}
+
+.sidebar .profile h2 {
+    margin: 0;
+    font-size: 1.5rem;
+}
+
+.sidebar .profile p {
+    margin-top: 5px;
+}
+
+/* Navbar Links Styling */
+.sidebar nav ul {
+    list-style-type: none;
+    padding: 0;
+    margin-top: 20px; /* Adds space after the profile */
+}
+
+.sidebar nav ul li {
+    padding: 15px;
+    margin: 0;
+}
+
+.sidebar nav ul li a {
+    color: white;
+    text-decoration: none;
+    display: block;
+    padding: 10px;
+    border-radius: 4px;
+    font-size: 1.1rem;
+}
+
+.sidebar nav ul li a:hover {
+    background-color: #495057;
+}
+
+/* Main Content Area */
+.main-content {
+    margin-left: 250px; /* Ensures space for sidebar */
+    padding: 20px;
+    flex-grow: 1;
+}
+
+/* Table Styling */
+.table-responsive {
+    max-height: 400px; /* Optional: Makes the table scrollable */
+    overflow-y: auto;
+}
+
+.table thead th {
+    position: sticky;
+    top: 0;
+    background-color: #f8f9fa;
+}
+
+/* Navbar Styling (For Admin Dashboard) */
+.navbar {
+    background-color: #343a40;
+    color: white;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+}
+
+.navbar .profile {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.navbar .profile h2 {
+    margin: 0;
+    font-size: 1.5rem;
+}
+
+.navbar .profile p {
+    font-size: 1rem;
+    margin-top: 5px;
+}
+
+.navbar nav {
+    flex-grow: 1;
+}
+
+.navbar nav ul {
+    list-style: none;
+    padding-left: 0;
+    margin: 0;
+}
+
+.navbar nav ul li {
+    margin: 15px 0;
+}
+
+.navbar nav ul li a {
+    color: white;
+    text-decoration: none;
+    font-size: 1.1rem;
+    display: block;
+    padding: 10px;
+    border-radius: 4px;
+}
+
+.navbar nav ul li a:hover {
+    background-color: #495057;
+}
+
+/* Media Queries for Mobile Responsiveness */
+@media (max-width: 768px) {
+    .sidebar {
+        width: 100%; /* Sidebar takes full width on small screens */
+        height: auto;
+        position: relative; /* Makes the sidebar part of the flow */
+    }
+
+    .main-content {
+        margin-left: 0; /* Remove sidebar margin on small screens */
+    }
+
+    .navbar {
+        padding: 10px;
+    }
+
+    .navbar nav ul {
+        display: block;
+    }
+
+    .navbar nav ul li {
+        margin: 10px 0;
+    }
+
+    .navbar .profile h2 {
+        font-size: 1.2rem;
+    }
+
+    .navbar .profile p {
+        font-size: 0.9rem;
+    }
+}

@@ -45,6 +45,20 @@
                 <i class="fas fa-users w-6"></i>
                 <span>Utilisateurs</span>
             </a>
+<!-- benjouad -->
+            <!-- New links for All Users and Create User -->
+            <a href="../includes/allUsers.php" 
+               class="nav-link flex items-center py-2 px-3 rounded-md text-gray-700 hover:bg-gray-100">
+                <i class="fas fa-user-friends w-6"></i>
+                <span>Voir Tous les Utilisateurs</span>
+            </a>
+
+            <a href="../includes/create_user.php" 
+               class="nav-link flex items-center py-2 px-3 rounded-md text-gray-700 hover:bg-gray-100">
+                <i class="fas fa-user-plus w-6"></i>
+                <span>Créer un Utilisateur</span>
+            </a>
+<!-- benjouad -->
 
             <!-- Gestion de Contenu Dropdown -->
             <div x-data="{ open: false }" class="nav-link">
@@ -60,7 +74,7 @@
                 <!-- Dropdown Links for Content Pages -->
                 <div x-show="open" class="ml-6 mt-2 space-y-1">
                     <a href="../pages/topbar-content.php" class="block py-2 px-3 rounded-md text-gray-700 hover:bg-gray-100">Topbar Contenu</a>                 
-                    <a href="../pages/header-content.php" class="block py-2 px-3 rounded-md text-gray-700 hover:bg-gray-100">Header Contentenu</a>
+                    <a href="../pages/header-content.php" class="block py-2 px-3 rounded-md text-gray-700 hover:bg-gray-100">Header Contenu</a>
                     <a href="../pages/about-content.php" class="block py-2 px-3 rounded-md text-gray-700 hover:bg-gray-100">Page à propos</a>
                     <a href="../pages/carousel-content.php" class="block py-2 px-3 rounded-md text-gray-700 hover:bg-gray-100">Carousel</a>
                     <a href="../pages/contact-content.php" class="block py-2 px-3 rounded-md text-gray-700 hover:bg-gray-100">Contacts</a>
