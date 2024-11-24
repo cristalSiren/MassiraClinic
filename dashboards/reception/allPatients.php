@@ -110,6 +110,21 @@ $patients = $controller->getPatientsBySearch($searchQuery, $entryDate);
                     value="<?php echo htmlspecialchars($entryDate); ?>">
                 <button class="px-4 py-2 bg-blue-500 text-white rounded-lg">Rechercher</button>
             </form>
+            <!-- Add the Import and Export Buttons -->
+            <div class="flex justify-between mb-4">
+                <form action="export_patients.php" method="post">
+                    <button type="submit" class="px-4 py-2 bg-green-500 text-white rounded-lg">Exporter vers Excel</button>
+                </form>
+                
+                <form action="import_patients.php" method="post" enctype="multipart/form-data">
+                    <label for="import_file" class="px-4 py-2 bg-yellow-500 text-white rounded-lg cursor-pointer">
+                        Importer depuis Excel
+                    </label>
+                    <input type="file" name="import_file" id="import_file" class="hidden" />
+                    <button type="submit" class="px-4 py-2 bg-yellow-500 text-white rounded-lg hidden">Importer</button>
+                </form>
+            </div>
+
 
             <!-- Table Container with Scrollable Table -->
             <div class="table-container bg-white shadow rounded-lg">

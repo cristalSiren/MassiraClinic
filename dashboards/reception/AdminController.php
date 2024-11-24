@@ -276,6 +276,35 @@ class AdminController {
     
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+    public function getPatientsBySearchXlsx($searchTerm, $filter) {
+        try {
+            $query = "SELECT CIN, Nom, Prenom, Tel, date_entree, adresse, status FROM patients";
+
+            // Optional: Add filters based on search term
+            if (!empty($searchTerm)) {
+                $query .= " WHERE Nom LIKE :searchTerm OR Prenom LIKE :searchTerm";
+            }
+
+            $stmt = $this->conn->prepare($query);
+
+            if (!empty($searchTerm)) {
+                $stmt->bindValue(':searchTerm', '%' . $searchTerm . '%', PDO::PARAM_STR);
+            }
+
+            $stmt->execute();
+
+            // Fetch all rows
+            $patients = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+            return $patients; // Return array of patients
+
+        } catch (PDOException $e) {
+            error_log("Database error: " . $e->getMessage());
+            return []; // Return empty array on failure
+        }
+    }
+
+    
     
 
     public function createPatient($data) {
@@ -354,4 +383,10 @@ class AdminController {
         $stmt = $this->conn->prepare("DELETE FROM patients WHERE CIN = ?");
         return $stmt->execute([$cin]);
     }
+    public function addPatient($cin, $nom, $prenom, $tel, $adresse, $date_entree, $historique_medical, $status) {
+        $stmt = $this->conn->prepare("INSERT INTO patients (CIN, Nom, Prenom, Tel, adresse, date_entree, historique_medical, status) 
+                                     VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+        return $stmt->execute([$cin, $nom, $prenom, $tel, $adresse, $date_entree, $historique_medical, $status]);
+    }
+    
 }
