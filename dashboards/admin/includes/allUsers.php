@@ -1,6 +1,6 @@
 <?php
 // Include the database connection file (this will automatically set the $conn variable)
-include '../includes/dbconnexion.php';
+include '../includes/db2.php';
 
 // Initialize the database connection
 $conn = connect(); // This will assign the PDO connection to the $conn variable

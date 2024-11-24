@@ -13,7 +13,7 @@
 // include_once  '../../config/config.php';
 
 require '../includes/AdminController.php';
-require '../includes/dbconnexion.php'; 
+require '../includes/db2.php'; 
 $conn = connect();
 $controller = new AdminController($conn);
 
@@ -44,7 +44,7 @@ if ($userId && $userType) {
     <h2>Edit User</h2>
 
     <?php if ($user): ?>
-        <form action="save_user_changes.php" method="POST">
+        <form action="save_user_changes.php" method="POST" enctype="multipart/form-data">
             <input type="hidden" name="id" value="<?php echo htmlspecialchars($userId); ?>">
             <input type="hidden" name="type" value="<?php echo htmlspecialchars($userType); ?>">
 
@@ -74,6 +74,28 @@ if ($userId && $userType) {
 
             <!-- Specific Fields for Each User Type -->
             <?php if ($userType == 'receptionist'): ?>
+                <!-- Profile Picture Field -->
+                <div class="form-group">
+                    <label for="profile_pic">Profile Picture</label>
+                    <input type="file" class="form-control" id="profile_pic" name="profile_pic">
+                    <?php if (isset($user['profile_pic']) && $user['profile_pic']): ?>
+                        <p>Current Profile Picture: <img src="<?php echo $user['profile_pic']; ?>" alt="Profile Picture" width="100"></p>
+                    <?php endif; ?>
+                </div>
+
+                <!-- Username Field -->
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input type="text" class="form-control" id="username" name="username" value="<?php echo isset($user['username']) ? htmlspecialchars($user['username']) : ''; ?>" >
+                </div>
+
+                <!-- Password Field -->
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" class="form-control" id="password" name="password">
+                    <small>If you don't want to change the password, leave this blank.</small>
+                </div>
+
                 <div class="form-group">
                     <label for="info_bancaire">Bank Info</label>
                     <input type="text" class="form-control" id="info_bancaire" name="info_bancaire" value="<?php echo isset($user['info_bancaire']) ? htmlspecialchars($user['info_bancaire']) : ''; ?>" required>

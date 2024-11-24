@@ -24,7 +24,7 @@ $mutuel = isset($_POST['mutuel']) ? $_POST['mutuel'] : '';  // For patient
 
 // Initialize database connection
 // require '../../config/config.php';
-require '../includes/dbconnexion.php';
+require '../includes/db2.php';
 require '../includes/AdminController.php';
 
 $conn = connect();

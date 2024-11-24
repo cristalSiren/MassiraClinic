@@ -2,7 +2,7 @@
 // Include necessary files
 // require '../../config/config.php';
 require '../includes/AdminController.php';
-require '../includes/dbconnexion.php';
+require '../includes/db2.php';
 
 // Start the session to ensure the admin is logged in
 // session_start();
@@ -32,6 +32,17 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $status = isset($_POST['status']) ? $_POST['status'] : '';
     $ordonnance = isset($_POST['ordonnance']) ? $_POST['ordonnance'] : '';
     $mutuel = isset($_POST['mutuel']) ? $_POST['mutuel'] : '';
+    
+    // Handle profile picture upload
+    $profilePic = '';
+    if (isset($_FILES['profile_pic']) && $_FILES['profile_pic']['error'] == 0) {
+        $profilePic = 'uploads/' . basename($_FILES['profile_pic']['name']);
+        move_uploaded_file($_FILES['profile_pic']['tmp_name'], $profilePic);
+    }
+
+    // Handle username and password for receptionist
+    $username = isset($_POST['username']) ? $_POST['username'] : '';
+    $password = isset($_POST['password']) ? $_POST['password'] : '';
 
     // Prepare data for user creation
     $data = [
@@ -41,7 +52,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         'phone' => $phone,
         'address' => $address,
         'user_type' => $userType,
-        'date_entree' => $date_entree   // Added date_entree
+        'date_entree' => $date_entree,   // Added date_entree
+        'profile_pic' => $profilePic,     // Added profile picture
+        'username' => $username,          // Added username
+        'password' => password_hash($password, PASSWORD_BCRYPT)  // Added password (hashed)
     ];
 
     // Add specific data based on user type

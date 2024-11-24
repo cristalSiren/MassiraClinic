@@ -190,9 +190,7 @@ class AdminController {
                 return false; // Invalid user type
         }
     }
-    
-    
-    
+  
     private function getTableByType($type) {
         $tables = [
             'receptionist' => 'receptionists',
@@ -224,11 +222,11 @@ class AdminController {
     }
 
     // Delete patient by CIN
-    public function deletePatient($id) {
-        $stmt = $this->conn->prepare("DELETE FROM patients WHERE CIN = :id");
-        $stmt->bindParam(':id', $id);
-        $stmt->execute();
-    }
+    // public function deletePatient($id) {
+    //     $stmt = $this->conn->prepare("DELETE FROM patients WHERE CIN = :id");
+    //     $stmt->bindParam(':id', $id);
+    //     $stmt->execute();
+    // }
     public function getUsersByTypeAndSearch($type, $searchQuery) {
         $table = $this->getTableByType($type);
     
@@ -249,26 +247,111 @@ class AdminController {
     
         return [];
     }
-//     public function getPatientsBySearch($searchQuery, $entryDate)
-// {
-//     $query = "SELECT * FROM patients WHERE 1=1";
-//     $params = [];
 
-//     if (!empty($searchQuery)) {
-//         $query .= " AND (nom LIKE :search OR prenom LIKE :search OR CIN LIKE :search)";
-//         $params['search'] = '%' . $searchQuery . '%';
-//     }
-
-//     if (!empty($entryDate)) {
-//         $query .= " AND entry_date = :entry_date";
-//         $params['entry_date'] = $entryDate;
-//     }
-
-//     $stmt = $this->conn->prepare($query);
-//     $stmt->execute($params);
-
-//     return $stmt->fetchAll(PDO::FETCH_ASSOC);
-// }
-
+    public function getPatientsBySearch($searchQuery, $entryDate) {
+        // Include the Id column in the SELECT clause
+        $sql = "SELECT Id, CIN, Nom, Prenom, Tel, date_entree FROM patients WHERE 1";
     
+        if ($searchQuery) {
+            $sql .= " AND (Nom LIKE :searchQuery OR CIN LIKE :searchQuery)";
+        }
+    
+        if ($entryDate) {
+            $sql .= " AND date_entree = :entryDate";
+        }
+    
+        $stmt = $this->conn->prepare($sql);
+    
+        // Bind the search parameters
+        if (!empty($searchQuery)) {
+            $stmt->bindValue(':searchQuery', '%' . $searchQuery . '%');  // Fixed placeholder name
+        }
+    
+        // Bind the date entry parameter
+        if (!empty($entryDate)) {
+            $stmt->bindValue(':entryDate', $entryDate);
+        }
+    
+        $stmt->execute();
+    
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+    
+
+    public function createPatient($data) {
+        // Extract patient data from the provided array
+        $cin = $data['cin'] ?? '';
+        $nom = $data['name'] ?? '';
+        $prenom = $data['surname'] ?? '';
+        $tel = $data['phone'] ?? '';
+        $adresse = $data['address'] ?? '';
+        $date_entree = $data['date_entree'] ?? '';
+        $historique_medical = $data['historique_medical'] ?? '';
+        // $id_mu = $data['id_mu'] ?? null; // Optional
+        // $id_pr = $data['id_pr'] ?? null; // Optional
+        $status = $data['status'] ?? '';
+        $ordonnance = $data['prescription'] ?? '';
+        $mutuel = $data['mutuel'] ?? '';
+
+        // Validate required fields
+        if (empty($cin) || empty($nom) || empty($prenom) || empty($tel) || empty($adresse) || empty($date_entree)) {
+            throw new Exception("Please fill in all the required fields.".$cin." nom ".$nom." ".$prenom." tel ".$tel." ad ".$adresse." date ".$date_entree);
+        }
+
+        try {
+            // Establish a database connection
+            $db = connect();
+
+            // Prepare the SQL query
+            $sql = "INSERT INTO patients 
+                    (CIN, Nom, Prenom, Tel, adresse, date_entree, historique_medical, status, ordonnance, mutuel) 
+                    VALUES 
+                    (:cin, :nom, :prenom, :tel, :adresse, :date_entree, :historique_medical,  :status, :ordonnance, :mutuel)";
+
+            $stmt = $db->prepare($sql);
+
+            // Bind parameters
+            $stmt->bindParam(':cin', $cin);
+            $stmt->bindParam(':nom', $nom);
+            $stmt->bindParam(':prenom', $prenom);
+            $stmt->bindParam(':tel', $tel);
+            $stmt->bindParam(':adresse', $adresse);
+            $stmt->bindParam(':date_entree', $date_entree);
+            $stmt->bindParam(':historique_medical', $historique_medical);
+            // $stmt->bindParam(':id_mu', $id_mu);
+            // $stmt->bindParam(':id_pr', $id_pr);
+            $stmt->bindParam(':status', $status);
+            $stmt->bindParam(':ordonnance', $ordonnance);
+            $stmt->bindParam(':mutuel', $mutuel);
+
+            // Execute the query
+            $stmt->execute();
+
+            return "Patient record created successfully.";
+        } catch (PDOException $e) {
+            throw new Exception("Error: " . $e->getMessage());
+        }
+    }
+
+    public function getPatientById($id) {
+        $stmt = $this->conn->prepare("SELECT * FROM patients WHERE Id = ?");
+        $stmt->execute([$id]);
+    
+        // Fetch the result as an associative array or return false if no patient is found
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+    
+
+    public function updatePatient($id, $cin, $nom, $prenom, $tel, $adresse, $date_entree, $historique_medical, $prescription, $status) {
+        $stmt = $this->conn->prepare("UPDATE patients SET CIN = ?, Nom = ?, Prenom = ?, Tel = ?, adresse = ?, date_entree = ?, historique_medical = ?, ordonnance = ?, status = ? WHERE Id = ?");
+        return $stmt->execute([$cin, $nom, $prenom, $tel, $adresse, $date_entree, $historique_medical, $prescription, $status, $id]);
+    }
+    
+
+
+    // Delete patient by CIN
+    public function deletePatient($cin) {
+        $stmt = $this->conn->prepare("DELETE FROM patients WHERE CIN = ?");
+        return $stmt->execute([$cin]);
+    }
 }

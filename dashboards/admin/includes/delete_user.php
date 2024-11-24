@@ -12,7 +12,7 @@
 
 // include_once '../../config/config.php';
 require '../includes/AdminController.php'; // Include the controller
-require '../includes/dbconnexion.php';
+require '../includes/db2.php';
 
 $conn = connect();
 $controller = new AdminController($conn);

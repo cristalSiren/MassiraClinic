@@ -22,7 +22,7 @@
         <div class="container mx-auto mt-5">
             <h2 class="text-3xl font-bold text-gray-800 mb-6">Add a New User</h2>
 
-            <form action="save_user_create.php" method="POST" onsubmit="return validateForm()">
+            <form action="save_user_create.php" method="POST" onsubmit="return validateForm()" enctype="multipart/form-data">
                 <div class="form-group mb-4">
                     <label for="name" class="text-gray-700">Name</label>
                     <input type="text" class="form-control w-full p-3 border border-gray-300 rounded-md" id="name" name="name" required>
@@ -64,6 +64,21 @@
                     <div class="form-group mb-4">
                         <label for="info_bancaire" class="text-gray-700">Bank Information</label>
                         <input type="text" class="form-control w-full p-3 border border-gray-300 rounded-md" id="info_bancaire" name="info_bancaire">
+                    </div>
+                    <!-- Profile Picture input -->
+                    <div class="form-group mb-4">
+                        <label for="profile_pic" class="text-gray-700">Profile Picture</label>
+                        <input type="file" class="form-control w-full p-3 border border-gray-300 rounded-md" id="profile_pic" name="profile_pic" accept="image/*">
+                    </div>
+                    <!-- Username input -->
+                    <div class="form-group mb-4">
+                        <label for="username" class="text-gray-700">Username</label>
+                        <input type="text" class="form-control w-full p-3 border border-gray-300 rounded-md" id="username" name="username" required>
+                    </div>
+                    <!-- Password input -->
+                    <div class="form-group mb-4">
+                        <label for="password" class="text-gray-700">Password</label>
+                        <input type="password" class="form-control w-full p-3 border border-gray-300 rounded-md" id="password" name="password" required>
                     </div>
                 </div>
 

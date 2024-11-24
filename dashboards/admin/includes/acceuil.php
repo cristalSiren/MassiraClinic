@@ -1,6 +1,6 @@
 <?php
 // Include database connection
-include '../includes/dbconnexion.php';
+include '../includes/db2.php';
 
 // Données factices pour la démonstration
 $monthlyUsers = [
