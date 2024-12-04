@@ -276,34 +276,27 @@ class AdminController {
     
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
-    public function getPatientsBySearchXlsx($searchTerm, $filter) {
-        try {
-            $query = "SELECT CIN, Nom, Prenom, Tel, date_entree, adresse, status FROM patients";
-
-            // Optional: Add filters based on search term
-            if (!empty($searchTerm)) {
-                $query .= " WHERE Nom LIKE :searchTerm OR Prenom LIKE :searchTerm";
-            }
-
-            $stmt = $this->conn->prepare($query);
-
-            if (!empty($searchTerm)) {
-                $stmt->bindValue(':searchTerm', '%' . $searchTerm . '%', PDO::PARAM_STR);
-            }
-
-            $stmt->execute();
-
-            // Fetch all rows
-            $patients = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-            return $patients; // Return array of patients
-
-        } catch (PDOException $e) {
-            error_log("Database error: " . $e->getMessage());
-            return []; // Return empty array on failure
-        }
+    public function getPatientsBySearchXlsx($searchTerm, $entryDate)
+    {
+        // Sanitize input
+        $searchTerm = "%" . $searchTerm . "%";
+        $entryDate = "%" . $entryDate . "%";
+    
+        // Prepare SQL query to search by CIN, Nom, and date_entree
+        $sql = "SELECT * FROM patients WHERE (CIN LIKE :searchTerm OR Nom LIKE :searchTerm) AND date_entree LIKE :entryDate";
+        $stmt = $this->conn->prepare($sql);
+    
+        // Bind the parameters to the prepared statement
+        $stmt->bindValue(':searchTerm', $searchTerm, PDO::PARAM_STR);
+        $stmt->bindValue(':entryDate', $entryDate, PDO::PARAM_STR);
+    
+        // Execute the query
+        $stmt->execute();
+    
+        // Fetch all results
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
-
+    
     
     
 

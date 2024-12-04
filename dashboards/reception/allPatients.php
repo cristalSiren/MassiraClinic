@@ -102,7 +102,7 @@ $patients = $controller->getPatientsBySearch($searchQuery, $entryDate);
 
             <!-- Search Form -->
             <form method="GET" class="flex flex-wrap items-center mb-6">
-                <input type="text" name="search" placeholder="Rechercher par nom ou CIN"
+                <input type="text" name="search" placeholder="Rechercher par CIN, Nom, ou Prenom"
                     class="form-control w-full md:w-1/3 px-3 py-2 border rounded-lg focus:outline-none mb-4 md:mb-0 md:mr-4"
                     value="<?php echo htmlspecialchars($searchQuery); ?>">
                 <input type="date" name="date_entree"
@@ -110,12 +110,17 @@ $patients = $controller->getPatientsBySearch($searchQuery, $entryDate);
                     value="<?php echo htmlspecialchars($entryDate); ?>">
                 <button class="px-4 py-2 bg-blue-500 text-white rounded-lg">Rechercher</button>
             </form>
+
             <!-- Add the Import and Export Buttons -->
             <div class="flex justify-between mb-4">
+            <!-- <div class="flex justify-between mb-4"> -->
                 <form action="export_patients.php" method="post">
+                    <input type="hidden" name="search" value="<?php echo htmlspecialchars($searchQuery); ?>">
+                    <input type="hidden" name="date_entree" value="<?php echo htmlspecialchars($entryDate); ?>">
                     <button type="submit" class="px-4 py-2 bg-green-500 text-white rounded-lg">Exporter vers Excel</button>
                 </form>
-                
+
+
                 <form action="import_patients.php" method="post" enctype="multipart/form-data">
                     <label for="import_file" class="px-4 py-2 bg-yellow-500 text-white rounded-lg cursor-pointer">
                         Importer depuis Excel
