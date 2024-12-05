@@ -119,6 +119,12 @@ $patients = $controller->getPatientsBySearch($searchQuery, $entryDate);
                     <input type="hidden" name="date_entree" value="<?php echo htmlspecialchars($entryDate); ?>">
                     <button type="submit" class="px-4 py-2 bg-green-500 text-white rounded-lg">Exporter vers Excel</button>
                 </form>
+                <form action="export_prescription.php" method="post">
+                    <input type="hidden" name="search" value="<?php echo htmlspecialchars($searchQuery); ?>">
+                    <input type="hidden" name="date_entree" value="<?php echo htmlspecialchars($entryDate); ?>">
+                    <button type="submit" class="px-4 py-2 bg-red-500 text-white rounded-lg">Exporter Prescription en PDF</button>
+                </form>
+
 
 
                 <form action="import_patients.php" method="post" enctype="multipart/form-data">
