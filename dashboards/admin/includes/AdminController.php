@@ -269,6 +269,42 @@ class AdminController {
 
 //     return $stmt->fetchAll(PDO::FETCH_ASSOC);
 // }
+public function getStockBySearch($searchQuery = '', $startDate = null, $endDate = null)
+{
+    try {
+        $query = "SELECT * FROM stock WHERE 1=1";
 
-    
+        // Prepare parameters
+        $params = [];
+
+        // Add search query filter if provided
+        if (!empty($searchQuery)) {
+            $query .= " AND name LIKE :searchQuery";
+            $params[':searchQuery'] = '%' . $searchQuery . '%';
+        }
+
+        // Add date range filters if provided
+        if (!empty($startDate)) {
+            $query .= " AND added_on >= :startDate";
+            $params[':startDate'] = $startDate;
+        }
+
+        if (!empty($endDate)) {
+            $query .= " AND added_on <= :endDate";
+            $params[':endDate'] = $endDate;
+        }
+
+        // Execute the query
+        $stmt = $this->conn->prepare($query);
+        $stmt->execute($params);
+
+        // Fetch and return the results
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    } catch (PDOException $e) {
+        // Handle errors
+        error_log("Error in getStockBySearch: " . $e->getMessage());
+        return [];
+    }
+}
+   
 }

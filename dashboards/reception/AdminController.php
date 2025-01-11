@@ -247,35 +247,24 @@ class AdminController {
     
         return [];
     }
-
-    public function getPatientsBySearch($searchQuery, $entryDate) {
-        // Include the Id column in the SELECT clause
-        $sql = "SELECT Id, CIN, Nom, Prenom, Tel, date_entree FROM patients WHERE 1";
-    
-        if ($searchQuery) {
-            $sql .= " AND (Nom LIKE :searchQuery OR CIN LIKE :searchQuery)";
+    public function getPatientsBySearch($searchQuery, $dateStart, $dateEnd) {
+        $query = "SELECT * FROM patients WHERE (CIN LIKE ? OR Nom LIKE ? OR Prenom LIKE ?)";
+        $params = ["%$searchQuery%", "%$searchQuery%", "%$searchQuery%"];
+        
+        if ($dateStart) {
+            $query .= " AND date_entree >= ?";
+            $params[] = $dateStart;
+        }
+        if ($dateEnd) {
+            $query .= " AND date_entree <= ?";
+            $params[] = $dateEnd;
         }
     
-        if ($entryDate) {
-            $sql .= " AND date_entree = :entryDate";
-        }
-    
-        $stmt = $this->conn->prepare($sql);
-    
-        // Bind the search parameters
-        if (!empty($searchQuery)) {
-            $stmt->bindValue(':searchQuery', '%' . $searchQuery . '%');  // Fixed placeholder name
-        }
-    
-        // Bind the date entry parameter
-        if (!empty($entryDate)) {
-            $stmt->bindValue(':entryDate', $entryDate);
-        }
-    
-        $stmt->execute();
-    
+        $stmt = $this->conn->prepare($query);
+        $stmt->execute($params);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+    
     public function getPatientsBySearchXlsx($searchTerm, $entryDate)
     {
         // Sanitize input
@@ -381,5 +370,41 @@ class AdminController {
                                      VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
         return $stmt->execute([$cin, $nom, $prenom, $tel, $adresse, $date_entree, $historique_medical, $status]);
     }
-    
+    public function getStockBySearch($searchQuery = '', $startDate = null, $endDate = null)
+{
+    try {
+        $query = "SELECT * FROM stock WHERE 1=1";
+
+        // Prepare parameters
+        $params = [];
+
+        // Add search query filter if provided
+        if (!empty($searchQuery)) {
+            $query .= " AND name LIKE :searchQuery";
+            $params[':searchQuery'] = '%' . $searchQuery . '%';
+        }
+
+        // Add date range filters if provided
+        if (!empty($startDate)) {
+            $query .= " AND added_on >= :startDate";
+            $params[':startDate'] = $startDate;
+        }
+
+        if (!empty($endDate)) {
+            $query .= " AND added_on <= :endDate";
+            $params[':endDate'] = $endDate;
+        }
+
+        // Execute the query
+        $stmt = $this->conn->prepare($query);
+        $stmt->execute($params);
+
+        // Fetch and return the results
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    } catch (PDOException $e) {
+        // Handle errors
+        error_log("Error in getStockBySearch: " . $e->getMessage());
+        return [];
+    }
+}
 }

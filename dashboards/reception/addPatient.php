@@ -65,7 +65,7 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'receptionists') {
                 </div>
 
                 <div class="form-group mb-4">
-                    <label for="historique_medical" class="text-gray-700">Medical History</label>
+                    <label for="historique_medical" class="text-gray-700">Diagnostic</label>
                     <textarea class="form-control w-full p-3 border border-gray-300 rounded-md" id="historique_medical" name="historique_medical"></textarea>
                 </div>
 

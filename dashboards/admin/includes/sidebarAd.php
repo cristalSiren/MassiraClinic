@@ -58,6 +58,11 @@
                 <i class="fas fa-user-plus w-6"></i>
                 <span>Créer un Utilisateur</span>
             </a>
+            <a href="../includes/stock.php" 
+               class="nav-link flex items-center py-2 px-3 rounded-md text-gray-700 hover:bg-gray-100">
+                <i class="fas fa-user-plus w-6"></i>
+                <span>Stock</span>
+            </a>
 <!-- benjouad -->
 
             <!-- Gestion de Contenu Dropdown -->

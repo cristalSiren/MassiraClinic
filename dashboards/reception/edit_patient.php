@@ -92,7 +92,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <input type="date" name="date_entree" value="<?php echo htmlspecialchars($patient['date_entree']); ?>" class="w-full px-4 py-2 border rounded-lg" required>
                 </div>
                 <div>
-                    <label for="historique_medical" class="block">Historique médical</label>
+                    <label for="historique_medical" class="block">Diagnostic</label>
                     <textarea name="historique_medical" class="w-full px-4 py-2 border rounded-lg"><?php echo htmlspecialchars($patient['historique_medical']); ?></textarea>
                 </div>
                 <div>

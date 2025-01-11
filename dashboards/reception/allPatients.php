@@ -6,7 +6,6 @@ session_start();
 include 'db2.php';
 require 'AdminController.php';
 
-// || $_SESSION['role'] !== 'receptionist'
 if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'receptionists') {
     header('Location: login.php');
     exit;
@@ -17,11 +16,13 @@ $controller = new AdminController($conn);
 
 // Get search parameters
 $searchQuery = $_GET['search'] ?? '';
-$entryDate = $_GET['date_entree'] ?? '';
+$dateStart = $_GET['date_start'] ?? null;
+$dateEnd = $_GET['date_end'] ?? null;
 
 // Fetch patients from the database
-$patients = $controller->getPatientsBySearch($searchQuery, $entryDate);
+$patients = $controller->getPatientsBySearch($searchQuery, $dateStart, $dateEnd);
 ?>
+
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -31,59 +32,43 @@ $patients = $controller->getPatientsBySearch($searchQuery, $entryDate);
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.16/dist/tailwind.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <style>
-        /* Ensure layout consistency */
         .content-container {
             display: flex;
-            height: 100vh; /* Full viewport height */
+            height: 100vh;
         }
-
-        /* Sidebar styling */
         .sidebar {
-            width: 16rem; /* Fixed width */
+            width: 16rem;
             color: white;
-            position: sticky; /* Stays fixed while scrolling */
+            position: sticky;
             top: 0;
-            height: 100vh; /* Full height */
-            overflow-y: auto; /* Scroll if content exceeds */
+            height: 100vh;
+            overflow-y: auto;
         }
-
-        /* Main content area */
         .main-content {
-            flex: 1; /* Occupy remaining space */
-            overflow-y: auto; /* Enable scrolling for main content */
+            flex: 1;
+            overflow-y: auto;
             padding: 1.5rem;
             background-color: #f7fafc;
-            height: 100vh; /* Make sure this occupies full viewport height */
+            height: 100vh;
         }
-
-        /* Table scrollable container */
         .table-container {
-            overflow-y: auto; /* Table scrollable */
-            max-height: calc(100vh - 200px); /* Adjust table height dynamically based on page height */
+            overflow-y: auto;
+            max-height: calc(100vh - 200px);
         }
-
         table {
             width: 100%;
             border-collapse: collapse;
         }
-
         thead {
-            position: sticky; /* Keep the header visible while scrolling */
+            position: sticky;
             top: 0;
-            background-color: #2d3748; /* Header background */
+            background-color: #2d3748;
             color: white;
         }
-
         th, td {
             padding: 10px;
             text-align: left;
         }
-
-        td {
-            vertical-align: middle;
-        }
-
-        /* Make sure the table rows have some space between them */
         tbody tr:hover {
             background-color: #f1f1f1;
         }
@@ -101,41 +86,37 @@ $patients = $controller->getPatientsBySearch($searchQuery, $entryDate);
             <h1 class="text-3xl font-bold text-gray-800 mb-6">Tous les Patients</h1>
 
             <!-- Search Form -->
-            <form method="GET" class="flex flex-wrap items-center mb-6">
+            <form method="GET" class="flex flex-wrap items-center mb-6" id="searchForm">
                 <input type="text" name="search" placeholder="Rechercher par CIN, Nom, ou Prenom"
                     class="form-control w-full md:w-1/3 px-3 py-2 border rounded-lg focus:outline-none mb-4 md:mb-0 md:mr-4"
                     value="<?php echo htmlspecialchars($searchQuery); ?>">
-                <input type="date" name="date_entree"
+                <input type="date" name="date_start"
                     class="form-control w-full md:w-1/3 px-3 py-2 border rounded-lg focus:outline-none mb-4 md:mb-0 md:mr-4"
-                    value="<?php echo htmlspecialchars($entryDate); ?>">
-                <button class="px-4 py-2 bg-blue-500 text-white rounded-lg">Rechercher</button>
+                    value="<?php echo htmlspecialchars($_GET['date_start'] ?? ''); ?>" placeholder="Date de début">
+                <input type="date" name="date_end"
+                    class="form-control w-full md:w-1/3 px-3 py-2 border rounded-lg focus:outline-none mb-4 md:mb-0 md:mr-4"
+                    value="<?php echo htmlspecialchars($_GET['date_end'] ?? ''); ?>" placeholder="Date de fin">
+                <button class="px-4 py-2 bg-blue-500 text-white rounded-lg mr-4">Rechercher</button>
+                <button type="button" onclick="clearFilters()" class="px-4 py-2 bg-gray-500 text-white rounded-lg">Réinitialiser</button>
             </form>
 
             <!-- Add the Import and Export Buttons -->
             <div class="flex justify-between mb-4">
-            <!-- <div class="flex justify-between mb-4"> -->
                 <form action="export_patients.php" method="post">
                     <input type="hidden" name="search" value="<?php echo htmlspecialchars($searchQuery); ?>">
-                    <input type="hidden" name="date_entree" value="<?php echo htmlspecialchars($entryDate); ?>">
                     <button type="submit" class="px-4 py-2 bg-green-500 text-white rounded-lg">Exporter vers Excel</button>
                 </form>
                 <form action="export_prescription.php" method="post">
                     <input type="hidden" name="search" value="<?php echo htmlspecialchars($searchQuery); ?>">
-                    <input type="hidden" name="date_entree" value="<?php echo htmlspecialchars($entryDate); ?>">
                     <button type="submit" class="px-4 py-2 bg-red-500 text-white rounded-lg">Exporter Prescription en PDF</button>
                 </form>
-
-
-
                 <form action="import_patients.php" method="post" enctype="multipart/form-data">
                     <label for="import_file" class="px-4 py-2 bg-yellow-500 text-white rounded-lg cursor-pointer">
                         Importer depuis Excel
                     </label>
                     <input type="file" name="import_file" id="import_file" class="hidden" />
-                    <button type="submit" class="px-4 py-2 bg-yellow-500 text-white rounded-lg hidden">Importer</button>
                 </form>
             </div>
-
 
             <!-- Table Container with Scrollable Table -->
             <div class="table-container bg-white shadow rounded-lg">
@@ -178,5 +159,13 @@ $patients = $controller->getPatientsBySearch($searchQuery, $entryDate);
             </div>
         </div>
     </div>
+
+    <script>
+        function clearFilters() {
+            const form = document.getElementById('searchForm');
+            form.reset();
+            window.location.href = window.location.pathname;
+        }
+    </script>
 </body>
 </html>
